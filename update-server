@@ -309,7 +309,7 @@ apache_remove() {
 
 fetch_git_source() {
     # Make sure we have git before we use it
-    apt-get install -y git    
+    git_preq    
     for gitmodule in fixmystreet mapit ; do
 	if [ ! -d $gitmodule ] ; then
 	    git clone git://github.com/petterreinholdtsen/$gitmodule.git -b $servername || \
@@ -540,6 +540,11 @@ tune_postgresql() {
     sysctl -w kernel.shmmax=$(( 130 * 1024 * 1024 ))
     /etc/init.d/postgresql reload
 }
+
+git_preq() {
+    apt-get install -y git gettext libhaml-ruby1.8
+}
+
 
 mkdir -p /srv/$servername
 cd /srv/$servername/
