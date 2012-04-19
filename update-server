@@ -32,9 +32,6 @@ basedir=/srv/$servername
 codename=$(lsb_release -cs)
 
 install_debs() {
-    # Statistics::Distributions is created locally
-    dpkg -i /root/libstatistics-distributions-perl_1.02-1_all.deb
-
     # Install fixmystreet dependencies
     apt-get install -y $(cat fixmystreet/conf/packages) \
 	libregexp-common-perl php5-cli
@@ -118,6 +115,7 @@ install_dev_catalyst() {
 	apt-get install -y dh-make-perl apt-file
 	apt-file update
 
+	installcpandeb Statistics::Distributions
 	installcpandeb URI::SmartURI
 	installcpandeb Catalyst::Plugin::SmartURI
 	installcpandeb Catalyst::Plugin::Unicode::Encoding
