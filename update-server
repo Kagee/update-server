@@ -136,13 +136,6 @@ install_dev_catalyst() {
     )
 }
 
-check_install_git() {
-    command -v git >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        apt-get install -y git
-    fi
-}
-
 pgsql_createuser() {
     dbuser="$1"
     dbpassword="$2"
@@ -315,7 +308,8 @@ apache_remove() {
 
 
 fetch_git_source() {
-    check_install_git
+    # Make sure we have git before we use it
+    apt-get install -y git    
     for gitmodule in fixmystreet mapit ; do
 	if [ ! -d $gitmodule ] ; then
 	    git clone git://github.com/petterreinholdtsen/$gitmodule.git -b $servername || \
@@ -551,6 +545,7 @@ cd /srv/$servername/
 
 case "$1" in 
     bootstrap)
+	echo "Preparing to install a fixmystreet clone"
 	fetch_git_source
 	install_debs
 	if [ yes = "$CATALYST" ] ; then
@@ -603,6 +598,9 @@ case "$1" in
 	load_mapit_osm
 	flush_memcache
 	;;
+    *)
+        echo "$0: Bootstrap or update a fixmystreet clone. Use either bootstrap (first-time setup and installation) or update as first argument."
+        ;;
 esac
 
 
