@@ -139,6 +139,13 @@ install_dev_catalyst() {
     )
 }
 
+check_install_git() {
+    git --version 2>&1 >/dev/null
+    if [ $? -ne 0 ]; then
+        apt-get install -y git
+    fi
+}
+
 pgsql_createuser() {
     dbuser="$1"
     dbpassword="$2"
@@ -311,6 +318,7 @@ apache_remove() {
 
 
 fetch_git_source() {
+    check_install_git
     for gitmodule in fixmystreet mapit ; do
 	if [ ! -d $gitmodule ] ; then
 	    git clone git://github.com/petterreinholdtsen/$gitmodule.git -b $servername || \
