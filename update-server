@@ -505,6 +505,7 @@ load_mapit() {
 }
 
 setup_locale() {
+	# TODO: Consider replacing with calls to append_if_missing
     cat > /etc/locale.gen  <<EOF
 en_GB.UTF-8 UTF-8
 en_US.UTF-8 UTF-8
@@ -545,6 +546,7 @@ cd /srv/$servername/
 
 case "$1" in 
     bootstrap)
+    apt-get update
 	echo "Preparing to install a fixmystreet clone"
 	fetch_git_source
 	install_debs
@@ -584,6 +586,7 @@ case "$1" in
 	rm $basedir/mapit/data/cache/relation-*
 	;;
     update)
+    apt-get update
 	fetch_git_source
 	fgmdbpassword=$(grep OPTION_BCI_DB_PASS $basedir/fixmystreet/conf/general | cut -d\' -f4)
 	midbpassword=$(grep OPTION_MAPIT_DB_PASS $basedir/mapit/conf/general | cut -d\' -f4)
