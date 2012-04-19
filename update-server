@@ -541,6 +541,7 @@ tune_postgresql() {
     /etc/init.d/postgresql reload
 }
 
+mkdir -p /srv/$servername
 cd /srv/$servername/
 
 case "$1" in 
