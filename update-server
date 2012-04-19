@@ -32,6 +32,7 @@ basedir=/srv/$servername
 
 install_debs() {
     # Install fixmystreet dependencies
+    installcpandeb Statistics::Distributions
     apt-get install -y $(cat fixmystreet/conf/packages) \
 	libregexp-common-perl php5-cli lsb-release
 
