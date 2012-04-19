@@ -130,11 +130,11 @@ install_dev_catalyst() {
 }
 
 installcpandeb() {
-            pkg=$1
-            echo "info: Generating deb for $pkg"
-            debs=$(LC_ALL=C cpan2deb $pkg 2>&1 |grep 'dpkg-deb: building package'| sed "s/.* in \`\(.*\)'./\1/" | sed 's%^../%%')
-            echo "info: Installing $debs"
-            dpkg -i $debs
+    pkg=$1
+    echo "info: Generating deb for $pkg"
+    debs=$(LC_ALL=C cpan2deb $pkg 2>&1 |grep 'dpkg-deb: building package'| sed "s/.* in \`\(.*\)'./\1/" | sed 's%^../%%')
+    echo "info: Installing $debs"
+    dpkg -i $debs
 }
 
 pgsql_createuser() {
@@ -308,9 +308,7 @@ apache_remove() {
 }
 
 
-fetch_git_source() {
-    # Make sure we have git before we use it
-    git_preq    
+fetch_git_source() {    
     for gitmodule in fixmystreet mapit ; do
 	if [ ! -d $gitmodule ] ; then
 	    git clone git://github.com/petterreinholdtsen/$gitmodule.git -b $servername || \
@@ -542,8 +540,10 @@ tune_postgresql() {
     /etc/init.d/postgresql reload
 }
 
-git_preq() {
+install_preq() {
     apt-get install -y git gettext libhaml-ruby1.8
+    apt-get install -y dh-make-perl apt-file
+    apt-file update
 }
 
 
@@ -552,17 +552,17 @@ cd /srv/$servername/
 
 case "$1" in 
     bootstrap)
-    apt-get update
+        apt-get update
 	echo "Preparing to install a fixmystreet clone"
+        install_preq
 	fetch_git_source
 	install_debs
 	if [ yes = "$CATALYST" ] ; then
 	    install_dev_catalyst
 	fi
 
-
-# Not yet ready, should adjust dynamically based on memory size
-#	tune_postgresql
+        # Not yet ready, should adjust dynamically based on memory size
+        # tune_postgresql
 
         # Password to use when connecting to the postgresql database.
 	fgmdbpassword="$(pwgen -1)"
