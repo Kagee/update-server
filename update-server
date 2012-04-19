@@ -29,12 +29,17 @@ export PATH
 
 servername=$(hostname)
 basedir=/srv/$servername
-codename=$(lsb_release -cs)
+# Define codename here, but only set it after 
+# we are sure that lsb-release is installed
+codename=""
 
 install_debs() {
     # Install fixmystreet dependencies
     apt-get install -y $(cat fixmystreet/conf/packages) \
-	libregexp-common-perl php5-cli
+	libregexp-common-perl php5-cli lsb-release
+
+codename=$(lsb_release -cs)
+
 #   libcache-memcached-perl libfile-slurp-perl \
 #	libgeography-nationalgrid-perl liberror-perl libwww-perl \
 #	libimage-magick-perl libdbd-pg-perl libio-string-perl \
