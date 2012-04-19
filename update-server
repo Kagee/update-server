@@ -104,14 +104,6 @@ install_dev_catalyst() {
 
     # Workaround for missing Perl modules in Debian
     (
-	installcpandeb() {
-	    pkg=$1
-	    echo "info: Generating deb for $pkg"
-	    debs=$(LC_ALL=C cpan2deb $pkg 2>&1 |grep 'dpkg-deb: building package'| sed "s/.* in \`\(.*\)'./\1/" | sed 's%^../%%')
-	    echo "info: Installing $debs"
-	    dpkg -i $debs
-	}
-
 	mkdir -p /srv/src
 	cd /srv/src
 
@@ -135,6 +127,14 @@ install_dev_catalyst() {
 
 	# App::cpanminus, Bundle::DBD::Pg, CPAN::ParseDistribution
     )
+}
+
+installcpandeb() {
+            pkg=$1
+            echo "info: Generating deb for $pkg"
+            debs=$(LC_ALL=C cpan2deb $pkg 2>&1 |grep 'dpkg-deb: building package'| sed "s/.* in \`\(.*\)'./\1/" | sed 's%^../%%')
+            echo "info: Installing $debs"
+            dpkg -i $debs
 }
 
 pgsql_createuser() {
