@@ -601,35 +601,35 @@ case "$1" in
 esac
 
 
-migration() {
+#migration() {
 
 # Link to graph from admin page is broken
 
-These branches are merged into the catalyst version
+#These branches are merged into the catalyst version
 
-  area-link-from-problem https://github.com/mysociety/fixmystreet/pull/110
-  more-stats https://github.com/mysociety/fixmystreet/pull/108
-  survey_results https://github.com/mysociety/fixmystreet/pull/90
-                 https://github.com/mysociety/fixmystreet/pull/98
-  norwegian_frontpage (in 4324fbc)
-  rss-map-on-summary-pages superceded by new maps on the pages themselves
-  survey_result_page (609012b)
-  fix-perl-warnings-from-admin.cgi (also 609012b)
-  clickable-urls-in-reports - https://github.com/mysociety/fixmystreet/pull/107
-    (and 103 too)
-  json-more-flexible
-  norwegian-area-nra
-  osm_road_info https://github.com/mysociety/fixmystreet/pull/90 (unntatt bin/)
-  export-contactlist
-  council-solve-rates
-  open311-server (catalyst-open311-server)
-  update-translation (catalyst-norwegian-translation)
+#  area-link-from-problem https://github.com/mysociety/fixmystreet/pull/110
+#  more-stats https://github.com/mysociety/fixmystreet/pull/108
+#  survey_results https://github.com/mysociety/fixmystreet/pull/90
+#                 https://github.com/mysociety/fixmystreet/pull/98
+#  norwegian_frontpage (in 4324fbc)
+#  rss-map-on-summary-pages superceded by new maps on the pages themselves
+#  survey_result_page (609012b)
+#  fix-perl-warnings-from-admin.cgi (also 609012b)
+#  clickable-urls-in-reports - https://github.com/mysociety/fixmystreet/pull/107
+#    (and 103 too)
+#  json-more-flexible
+#  norwegian-area-nra
+#  osm_road_info https://github.com/mysociety/fixmystreet/pull/90 (unntatt bin/)
+#  export-contactlist
+#  council-solve-rates
+#  open311-server (catalyst-open311-server)
+#  update-translation (catalyst-norwegian-translation)
 
-These are left
+#These are left
 
-  graph-using-perl
+#  graph-using-perl
 
-  microformat-tagging
-  mobile_frontpage
-  mobile_support
-}
+#  microformat-tagging
+#  mobile_frontpage
+#  mobile_support
+#}
