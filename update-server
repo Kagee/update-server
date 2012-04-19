@@ -22,7 +22,7 @@
 #
 
 # Exit on first error
-set -e
+set -e -x
 
 PATH=/sbin:/usr/sbin:$PATH
 export PATH
