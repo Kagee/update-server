@@ -161,10 +161,6 @@ install_dev_catalyst() {
 	mkdir -p "$basedir/src"
 	cd "$basedir/src"
 
-	apt-get install -y dh-make-perl apt-file
-	apt-file update
-
-	installcpandeb Statistics::Distributions
 	installcpandeb URI::SmartURI
 	installcpandeb Catalyst::Plugin::SmartURI
 	installcpandeb Catalyst::Plugin::Unicode::Encoding
@@ -598,6 +594,13 @@ install_preq() {
     apt-get install -y git gettext libhaml-ruby1.8
     apt-get install -y dh-make-perl apt-file
     apt-file update
+
+    cpan_config_size=$( wc -c /etc/perl/CPAN/Config.pm | cut -d' ' -f 1 )
+    if [ "$cpan_config_size" -lt 10  ]; then
+        echo "CPAN is not setup for automatic running."
+        echo " Please rerun cpan and say yes to 'Always commit changes to config variables to disk'";
+        exit;
+    fi
 }
 
 mkdir -p $basedir
