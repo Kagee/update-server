@@ -27,12 +27,17 @@ set -e -x
 PATH=/sbin:/usr/sbin:$PATH
 export PATH
 
-setup() { 
-    if [ "" = "$@" ]; then
-         options
-         exit;
-    fi
+options() {
+ echo "$0: $0 (bootstrap|update) [options]"
+        echo "Bootstrap or update a fixmystreet clone. Use either bootstrap (first-time setup and installation) or update as first argument."
+        echo "Options: "
+        echo "--servername_<servername>"
+        echo "--basedir_<basedir>"
+        echo "--catalyst"
+}
 
+
+setup() { 
     echo setup started
     for ARGU in "$@"
     do
@@ -63,11 +68,17 @@ setup() {
     fi
 
     if [ "$basedir" = "" ]; then
-        basedir=/srv/$servername
+        basedir=/srv
     fi
-
+    basedir="$basedir/$servername"
 }
-setup $@
+
+if [ $# -lt 1 ]; then
+    options
+    exit;
+else
+    setup $@
+fi
 
 echo "catalyst is $CATALYST"
 echo "servername is $servername"
@@ -147,8 +158,8 @@ install_dev_catalyst() {
 
     # Workaround for missing Perl modules in Debian
     (
-	mkdir -p /srv/src
-	cd /srv/src
+	mkdir -p "$basedir/src"
+	cd "$basedir/src"
 
 	apt-get install -y dh-make-perl apt-file
 	apt-file update
@@ -589,17 +600,8 @@ install_preq() {
     apt-file update
 }
 
-options() {
- echo "$0: $0 (bootstrap|update) [options]"
-        echo "Bootstrap or update a fixmystreet clone. Use either bootstrap (first-time setup and installation) or update as first argument."
-        echo "Options: "
-        echo "--servername_<servername>"
-        echo "--basedir_<basedir>"
-        echo "--catalyst"
-}
-
-mkdir -p /srv/$servername
-cd /srv/$servername/
+mkdir -p $basedir
+cd $basedir
 
 case "$1" in 
     bootstrap)
