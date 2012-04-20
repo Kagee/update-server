@@ -27,8 +27,51 @@ set -e -x
 PATH=/sbin:/usr/sbin:$PATH
 export PATH
 
-servername=$(hostname)
-basedir=/srv/$servername
+setup() { 
+    if [ "" = "$@" ]; then
+         options
+         exit;
+    fi
+
+    echo setup started
+    for ARGU in "$@"
+    do
+        echo "test $ARGU"
+        case "$ARGU" in
+            --catalyst)
+                CATALYST="yes"
+            ;;
+            *)
+                SARG=`echo $ARGU | cut -d'_' -f 2`
+                if [ "$SARG" = "$ARGU" ]; then
+                    continue;
+                fi
+                OPT=`echo $ARGU | cut -d'_' -f 1`
+                case "$OPT" in
+                    --servername)
+                        servername="$SARG"
+                    ;;
+                    --basedir)
+                        basedir="$SARG"
+                    ;;
+                esac
+            ;;
+        esac
+    done
+    if [ "$servername" = "" ]; then
+        servername=$(hostname)
+    fi
+
+    if [ "$basedir" = "" ]; then
+        basedir=/srv/$servername
+    fi
+
+}
+setup $@
+
+echo "catalyst is $CATALYST"
+echo "servername is $servername"
+echo "basedir is $basedir"
 
 install_debs() {
     # Install fixmystreet dependencies
@@ -546,6 +589,14 @@ install_preq() {
     apt-file update
 }
 
+options() {
+ echo "$0: $0 (bootstrap|update) [options]"
+        echo "Bootstrap or update a fixmystreet clone. Use either bootstrap (first-time setup and installation) or update as first argument."
+        echo "Options: "
+        echo "--servername_<servername>"
+        echo "--basedir_<basedir>"
+        echo "--catalyst"
+}
 
 mkdir -p /srv/$servername
 cd /srv/$servername/
@@ -557,7 +608,7 @@ case "$1" in
         install_preq
 	fetch_git_source
 	install_debs
-	if [ yes = "$CATALYST" ] ; then
+	if [ "yes" = "$CATALYST" ] ; then
 	    install_dev_catalyst
 	fi
 
@@ -608,9 +659,10 @@ case "$1" in
 	flush_memcache
 	;;
     *)
-        echo "$0: Bootstrap or update a fixmystreet clone. Use either bootstrap (first-time setup and installation) or update as first argument."
+        options
         ;;
 esac
+
 
 
 #migration() {
