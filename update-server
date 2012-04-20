@@ -87,10 +87,21 @@ echo "basedir is $basedir"
 install_debs() {
     # Install fixmystreet dependencies
     installcpandeb Statistics::Distributions
-    apt-get install -y $(cat fixmystreet/conf/packages) \
-	libregexp-common-perl php5-cli lsb-release
+    apt-get install -y lsb-release
+    codename=$(lsb_release -cs)
+   
 
-codename=$(lsb_release -cs)
+    case "$codename" in
+        squeeze)
+            PACKAGES=$(cat fixmystreet/conf/packages | sed s/postgresql-server-dev-8.3/postgresql-server-dev-8.4/)
+            ;;
+        *)
+            PACKAGES=$(cat fixmystreet/conf/packages)
+            ;;
+    esac
+
+    apt-get install -y $PACKAGES \
+	libregexp-common-perl php5-cli lsb-release
 
 #   libcache-memcached-perl libfile-slurp-perl \
 #	libgeography-nationalgrid-perl liberror-perl libwww-perl \
