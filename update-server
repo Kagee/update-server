@@ -101,7 +101,7 @@ install_debs() {
     esac
 
     apt-get install -y $PACKAGES \
-	libregexp-common-perl php5-cli lsb-release
+	libregexp-common-perl php5-cli
 
 #   libcache-memcached-perl libfile-slurp-perl \
 #	libgeography-nationalgrid-perl liberror-perl libwww-perl \
@@ -213,10 +213,10 @@ installcpandeb() {
         FOLDER=$(tar -zxvf $TMPNAME)
         FOLDER=$(echo "$FOLDER" | head -1)  # Split to prevent tar write error
         rm $TMPNAME
-	MAKEDEB=$(LC_ALL=C dh-make-perl make --build "$FOLDER" 2>&1) 
+	MAKEDEB=$(LC_ALL=C dh-make-perl --requiredeps make --build "$FOLDER" 2>&1) 
 	rm -r $FOLDER
     else
-        MAKEDEB=$(LC_ALL=C cpan2deb $pkg 2>&1)
+        MAKEDEB=$(LC_ALL=C cpan2deb --requiredeps $pkg 2>&1)
     fi
     debs=$(echo -e "$MAKEDEB" | grep 'dpkg-deb: building package' | sed "s/.* in \`\(.*\)'./\1/" | sed 's%^../%%' )
     
