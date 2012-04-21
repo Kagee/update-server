@@ -196,7 +196,15 @@ installcpandeb() {
 
     HTTP=$(expr substr "$pkg" 1 4);
     FTP=$(expr substr $pkg 1 3);
-    TARGZ=$(expr "$pkg" : '.*\(tar\.gz\)')
+
+    # We can't user exp regexp to get en of string,
+    # because it will return a error code if string not found
+    LEN=$(expr length "$pkg");
+    START=$( expr $LEN - 5 )
+
+    if [ "$START" -gt "0" ] ; then
+        TARGZ=$(expr substr "$pkg" "$START" 6)
+    fi
 
     # If arguemtn starts with http or ftp, and ends with tar.gz, download and install it  
     if [ "$HTTP" = "http" -o "$FTP" = "ftp" ] && [ "$TARGZ" = "tar.gz"  ] ; then
