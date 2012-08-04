@@ -61,7 +61,10 @@ psql -d fms -U fms < db/schema.sql
 psql -d fms -U fms < db/alert_types.sql
 
 echo "Installing required packages"
-xargs -a conf/packages.debian-squeeze apt-get install
 
-echo "Installin compass using gem"
+#xargs -a conf/packages.debian-squeeze apt-get install
+# Work around package not avalible in squeeze but listed in packages.debian-squeeze
+grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install
+
+echo "Installing compass using gem"
 gem install compass
