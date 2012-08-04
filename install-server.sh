@@ -2,7 +2,7 @@
 
 set -e
 DBPWD="somepassword"
-apt-get install git
+apt-get install -y git
 
 if [ ! -d "FixMyStreet" ]; then
     mkdir FixMyStreet
@@ -33,7 +33,7 @@ else
     locale-gen
 fi
 
-apt-get install postgresql-8.4
+apt-get -y install postgresql-8.4
 
 #TODO: Remove when script complete
 echo "DROP DATABASE fms; DROP USER FMS;" | su postgres -c "psql --echo-all"
@@ -64,7 +64,7 @@ echo "Installing required packages"
 
 #xargs -a conf/packages.debian-squeeze apt-get install
 # Work around package not avalible in squeeze but listed in packages.debian-squeeze
-grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install
+grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
 
 echo "Installing compass using gem"
 gem install compass
