@@ -98,7 +98,7 @@ apt-get install ruby-compass ruby-haml
 # apt-get install perlmagick
 # Already installed?
 
-# Why is not make installed??? (cartoon requires make)
+# Why is not make installed? (cartoon requires make)
 apt-get install make
 
 ./bin/install_perl_modules
@@ -106,12 +106,17 @@ apt-get install make
 cat ./conf/general.yml-example | sed\
  -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
  -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://localhost:3000/fakemapit/'*"\
- -e "s*^ALLOWED_COBRANDS:*#ALLOWED_COBRANDS:*"\
- -e "s*^  - cobrand_one*#  - cobrand_one*"\
+ -e "s*^  - cobrand_one*#  - fixmystreet: 'localhost'*"\
  -e "s*^  - cobrand_two: 'hostname_substring2'*#  - cobrand_two: 'hostname_substring2'*"\
  -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
 >> ./conf/general.yml
 
 ./bin/make_css
+
+# Unsure if this should be run
+# commonlib/bin/gettext-makemo --quiet FixMyStreet
+
+# missing module for admin/summary
+./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
 
 echo "Why dont you run './bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork' now"
