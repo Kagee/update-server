@@ -2,6 +2,11 @@
 
 set -e
 DBPWD="somepassword"
+
+echo "\ndeb http://debian.mysociety.org squeeze main\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+
+apt-get update
+
 apt-get install -y git
 
 if [ ! -d "FixMyStreet" ]; then
@@ -62,9 +67,9 @@ psql -d fms -U fms < db/alert_types.sql
 
 echo "Installing required packages"
 
-#xargs -a conf/packages.debian-squeeze apt-get install
+xargs -a conf/packages.debian-squeeze apt-get install
 # Work around package not avalible in squeeze but listed in packages.debian-squeeze
-grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
+# grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
 
 echo "Installing compass using gem"
 gem install compass
