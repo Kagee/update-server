@@ -3,7 +3,22 @@
 set -e
 DBPWD="somepassword"
 
-echo "\ndeb http://debian.mysociety.org squeeze main\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+if [ "$(grep '^deb http://debian.mysociety.org squeeze' /etc/apt/sources.list | wc -l)" -ne "1" ]
+then
+	echo "\ndeb http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+	echo "\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+fi
+
+if [ "$(grep 'http://ftp.us.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
+then
+	echo "\ndeb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
+fi
+
+if [ "$(grep '^Pin: release a=testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
+then
+    echo "Package: *\nPin: release a=stable\nPin-Priority: 950\n" >> /etc/apt/preferences
+    echo "Package: *\nPin: release a=testing\nPin-Priority: 900\n" >> /etc/apt/preferences
+fi
 
 apt-get update
 
@@ -71,5 +86,20 @@ xargs -a conf/packages.debian-squeeze apt-get install
 # Work around package not avalible in squeeze but listed in packages.debian-squeeze
 # grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
 
-echo "Installing compass using gem"
-gem install compass
+#echo "Installing compass using gem"
+#gem install compass
+
+# installing compass from testing will remove libhaml-ruby libhaml-ruby1.8
+# install ruby-haml to compensate
+apt-get install ruby-compass ruby-haml
+
+
+# perl Image:Magick
+# apt-get install perlmagick
+# Already installed?
+
+# Why is not make installed??? (cartoon requires make)
+apt-get install make
+
+./bin/install_perl_modules
+
