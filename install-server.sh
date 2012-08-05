@@ -103,9 +103,11 @@ apt-get install make
 
 ./bin/install_perl_modules
 
+# These settings are to minimice the number of errors in a test-run
 cat ./conf/general.yml-example | sed\
+ -e "s*^CONTACT_EMAIL: 'team@example.org'*CONTACT_EMAIL: 'fms-DO-NOT-REPLY@example.org'*"\
  -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
- -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://localhost:3000/fakemapit/'*"\
+ -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://mapit.mysociety.org/'*"\
  -e "s*^  - cobrand_one*#  - fixmystreet: 'localhost'*"\
  -e "s*^  - cobrand_two: 'hostname_substring2'*#  - cobrand_two: 'hostname_substring2'*"\
  -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
