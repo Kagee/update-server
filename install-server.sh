@@ -121,4 +121,8 @@ cat ./conf/general.yml-example | sed\
 # missing module for admin/summary
 ./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
 
-echo "Why dont you run './bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork' now"
+echo "Why dont you run some of these commands:"
+echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork"
+echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./bin/cron-wrapper prove -r t"
+echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./bin/cron-wrapper prove -r t 2>&1 &> complete_logfile"
+
