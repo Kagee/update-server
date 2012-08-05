@@ -104,6 +104,10 @@ apt-get install make
 ./bin/install_perl_modules
 
 # These settings are to minimice the number of errors in a test-run
+# CONTACT_EMAIL must be fms-DO-NOT-REPLY@example.org for some tests
+# MAPIT_URL must be UK (maybe non-fake) for some tests
+# fixmystreet cobrand must be activated for tests
+
 cat ./conf/general.yml-example | sed\
  -e "s*^CONTACT_EMAIL: 'team@example.org'*CONTACT_EMAIL: 'fms-DO-NOT-REPLY@example.org'*"\
  -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
