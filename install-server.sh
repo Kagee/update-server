@@ -103,3 +103,15 @@ apt-get install make
 
 ./bin/install_perl_modules
 
+cat ./conf/general.yml-example | sed\
+ -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
+ -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://localhost:3000/fakemapit/'*"\
+ -e "s*^ALLOWED_COBRANDS:*#ALLOWED_COBRANDS:*"\
+ -e "s*^  - cobrand_one*#  - cobrand_one*"\
+ -e "s*^  - cobrand_two: 'hostname_substring2'*#  - cobrand_two: 'hostname_substring2'*"\
+ -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
+>> ./conf/general.yml
+
+./bin/make_css
+
+echo "Why dont you run './bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork' now"
