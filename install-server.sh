@@ -125,10 +125,11 @@ cat ./conf/general.yml-example | sed\
 
 ./bin/make_css
 
-./bin/cron-wrapper ./make_emptyhomes_po
-./bin/cron-wrapper ./make_emptyhomes_welsh_po
+# Generate all po-files for test
+./bin/cron-wrapper ./bin/make_emptyhomes_po 
+./bin/cron-wrapper ./bin/make_emptyhomes_welsh_po 
 
-# Unsure if this should be run
+# Generate all mo-files
 commonlib/bin/gettext-makemo FixMyStreet
 
 # missing module for admin/summary
