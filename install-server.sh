@@ -135,7 +135,7 @@ commonlib/bin/gettext-makemo FixMyStreet
 ./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
 
 # Start server
-APP_SERVER_PID=$(mktmp)
+APP_SERVER_PID=$(mktemp)
 ./bin/cron-wrapper ./script/fixmystreet_app_server.pl --pidfile $APP_SERVER_PID  --background
 
 # Run tests
