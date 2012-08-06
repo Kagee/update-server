@@ -5,15 +5,15 @@ set -e
 DBPWD=$(head -c 32 /dev/urandom | base64)
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 
-if [ "$(grep '^deb http://debian.mysociety.org squeeze' /etc/apt/sources.list | wc -l)" -ne "1" ]
-then
-	echo "\ndeb http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
-	echo "\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
-fi
+#if [ "$(grep '^deb http://debian.mysociety.org squeeze' /etc/apt/sources.list | wc -l)" -ne "1" ]
+#then
+#	echo "\ndeb http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+#	echo "\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
+#fi
 
-if [ "$(grep 'http://ftp.us.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
+if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
-	echo "\ndeb http://ftp.us.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
+	echo "\ndeb http://ftp.no.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
 fi
 
 if [ "$(grep '^Pin: release a=testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
@@ -88,9 +88,9 @@ echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | psql -d fms -U fms
 
 echo "Installing required packages"
 
-xargs -a conf/packages.debian-squeeze apt-get install
-# Work around package not avalible in squeeze but listed in packages.debian-squeeze
-# grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
+# xargs -a conf/packages.debian-squeeze apt-get -y install
+# This package is no-working in stable and installed by cartoon anyway
+grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
 
 #echo "Installing compass using gem"
 #gem install compass
