@@ -1,7 +1,9 @@
 #! /bin/sh
 
 set -e
-DBPWD="somepassword"
+
+DBPWD=$(head -c 32 /dev/urandom | base64)
+RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 
 if [ "$(grep '^deb http://debian.mysociety.org squeeze' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
@@ -46,8 +48,9 @@ else
     then
         echo "'en_GB.UTF-8 UTF-8' already in /etc/locale.gen we will only generate"
     else
-        echo "Appending 'en_GB.UTF-8 UTF-8' to /etc/locale.gen for generation"
-        echo "\nen_GB.UTF-8 UTF-8" >> /etc/locale.gen
+        echo "Appending 'en_GB.UTF-8 UTF-8' and 'cy_GB.UTF-8 UTF-8'"
+	echo "to /etc/locale.gen for generation"
+        echo "\nen_GB.UTF-8 UTF-8\ncy_GB.UTF-8 UTF-8" >> /etc/locale.gen
     fi
     echo "Generating new locales"
     locale-gen
@@ -80,6 +83,9 @@ echo "Importing schemas"
 psql -d fms -U fms < db/schema.sql
 psql -d fms -U fms < db/alert_types.sql
 
+echo "Inserting secret"
+echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | psql -d fms -U fms
+
 echo "Installing required packages"
 
 xargs -a conf/packages.debian-squeeze apt-get install
@@ -109,7 +115,7 @@ cat ./conf/general.yml-example | sed\
  -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
  -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://mapit.mysociety.org/'*"\
  -e "s*^  - cobrand_one*#  - fixmystreet: 'localhost'*"\
- -e "s*^  - cobrand_two: 'hostname_substring2'*#  - cobrand_two: 'hostname_substring2'*"\
+ -e "s*^  - cobrand_two: 'hostname_substring2'*  - fixmystreet*"\
  -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
 >> ./conf/general.yml
 
