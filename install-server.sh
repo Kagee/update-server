@@ -118,15 +118,18 @@ cat ./conf/general.yml-example | sed\
  -e "s*^CONTACT_EMAIL: 'team@example.org'*CONTACT_EMAIL: 'fms-DO-NOT-REPLY@example.org'*"\
  -e "s*^BASE_URL: 'http://www.example.org'*BASE_URL: 'http://localhost:3000'*"\
  -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://mapit.mysociety.org/'*"\
- -e "s*^  - cobrand_one*#  - fixmystreet: 'localhost'*"\
+ -e "s*^  - cobrand_one*  - fixmystreet: 'localhost'*"\
  -e "s*^  - cobrand_two: 'hostname_substring2'*  - fixmystreet*"\
  -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
->> ./conf/general.yml
+> ./conf/general.yml
 
 ./bin/make_css
 
+./bin/cron-wrapper ./make_emptyhomes_po
+./bin/cron-wrapper ./make_emptyhomes_welsh_po
+
 # Unsure if this should be run
-# commonlib/bin/gettext-makemo --quiet FixMyStreet
+commonlib/bin/gettext-makemo FixMyStreet
 
 # missing module for admin/summary
 ./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
