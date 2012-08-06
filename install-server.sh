@@ -97,7 +97,7 @@ grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs ap
 
 # installing compass from testing will remove libhaml-ruby libhaml-ruby1.8
 # install ruby-haml to compensate
-apt-get install ruby-compass ruby-haml
+apt-get -y install ruby-compass ruby-haml
 
 
 # perl Image:Magick
@@ -105,7 +105,7 @@ apt-get install ruby-compass ruby-haml
 # Already installed?
 
 # Why is not make installed? (cartoon requires make)
-apt-get install make
+apt-get -y install make
 
 ./bin/install_perl_modules
 
