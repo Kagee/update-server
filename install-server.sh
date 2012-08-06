@@ -5,12 +5,6 @@ set -e
 DBPWD=$(head -c 32 /dev/urandom | base64)
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 
-#if [ "$(grep '^deb http://debian.mysociety.org squeeze' /etc/apt/sources.list | wc -l)" -ne "1" ]
-#then
-#	echo "\ndeb http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
-#	echo "\ndeb-src http://debian.mysociety.org squeeze main" >> /etc/apt/sources.list
-#fi
-
 if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
 	echo "\ndeb http://ftp.no.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
@@ -25,11 +19,6 @@ fi
 apt-get update
 
 apt-get install -y git
-
-if [ ! -d "FixMyStreet" ]; then
-    mkdir FixMyStreet
-fi
-cd FixMyStreet
 
 if [ ! -d "fixmystreet" ]; then
     git clone --recursive https://github.com/mysociety/fixmystreet.git
