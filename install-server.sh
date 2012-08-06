@@ -134,8 +134,20 @@ commonlib/bin/gettext-makemo FixMyStreet
 # missing module for admin/summary
 ./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
 
-echo "Why dont you run some of these commands:"
-echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork"
-echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./bin/cron-wrapper prove -r t"
-echo "LC_ALL=en_GB.utf8 ./bin/cron-wrapper ./bin/cron-wrapper prove -r t 2>&1 &> complete_logfile"
+# Start server
+APP_SERVER_PID=$(mktmp)
+./bin/cron-wrapper ./script/fixmystreet_app_server.pl --pidfile $APP_SERVER_PID  --background
+
+# Run tests
+./bin/cron-wrapper prove -r t
+
+# Stop server
+kill -9 `cat $APP_SERVER_PID`
+cat $APP_SERVER_PID
+rm $APP_SERVER_PID
+
+echo "Suggested commands: (if you are here, tests have completed successfully)"
+echo "./bin/cron-wrapper ./script/fixmystreet_app_server.pl -d --fork"
+echo "./bin/cron-wrapper ./bin/cron-wrapper prove -r t"
+echo "./bin/cron-wrapper ./bin/cron-wrapper prove -r t 2>&1 &> complete_logfile"
 
