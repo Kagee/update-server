@@ -1,5 +1,9 @@
 #! /bin/sh
-COBRAND_NAME="hild1"
+
+set -e
+
+COBRAND_NAME="hild1" # no spaces
+
 PM="package FixMyStreet::Cobrand::$COBRAND_NAME;
 use base 'FixMyStreet::Cobrand::Default';
 sub path_to_web_templates {
@@ -19,15 +23,15 @@ sub site_title { my ($self) = @_; return '$COBRAND_NAME'; }
 1;"
 
 makedirs() {
-	mkdir ./templates/web/hild1
-	mkdir ./templates/web/hild1/faq
-	mkdir ./templates/email/hild1
-	mkdir ./web/cobrands/hild1
+	mkdir ./templates/web/$COBRAND_NAME
+	mkdir ./templates/web/$COBRAND_NAME/faq
+	mkdir ./templates/email/$COBRAND_NAME
+	mkdir ./web/cobrands/$COBRAND_NAME
 }
 
 copyfiles() {
-	cp ./templates/web/fixmystreet/faq/faq-en-gb.html ./templates/web/hild1/faq/faq-nb.html
-	cp -r ./web/cobrands/default/* ./web/cobrands/hild1/
+	cp ./templates/web/fixmystreet/faq/faq-en-gb.html ./templates/web/$COBRAND_NAME/faq/faq-nb.html
+	cp -r ./web/cobrands/default/* ./web/cobrands/$COBRAND_NAME/
 }
 
 makepm() {
