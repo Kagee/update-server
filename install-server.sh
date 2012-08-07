@@ -4,6 +4,7 @@ set -e
 
 DBPWD=$(head -c 32 /dev/urandom | base64)
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
+BASE="/root/FixMyStreet"
 
 if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
@@ -20,11 +21,18 @@ apt-get update
 
 apt-get install -y git
 
+if [ ! -d $BASE ]; then
+    mkdir $BASE
+fi
+
+cd $BASE
+
 if [ ! -d "fixmystreet" ]; then
     git clone --recursive https://github.com/mysociety/fixmystreet.git
 else
     echo "Will assume that code is already cloned"
 fi
+
 cd fixmystreet
 
 # Generate required locales
@@ -88,7 +96,6 @@ grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs ap
 # install ruby-haml to compensate
 apt-get -y install ruby-compass ruby-haml
 
-
 # perl Image:Magick
 # apt-get install perlmagick
 # Already installed?
@@ -123,6 +130,9 @@ commonlib/bin/gettext-makemo FixMyStreet
 
 # missing module for admin/summary
 ./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
+
+# missing module for app-dev-server "--restart"
+./bin/cron-wrapper ./local/bin/carton install Catalyst::Restarter
 
 # Start server
 APP_SERVER_PID=$(mktemp)
