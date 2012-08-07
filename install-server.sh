@@ -3,7 +3,7 @@ set -e
 DBPWD=$(head -c 32 /dev/urandom | base64)
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 BASE="/root/FixMyStreet"
-PLUSS_TESTING=0
+PLUSS_TESTING=0 # 0 = don't use +testing
 
 add_apt_repo() {
 	if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]; then
