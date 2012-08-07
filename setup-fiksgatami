@@ -1,0 +1,45 @@
+#! /bin/sh
+COBRAND_NAME="hild1"
+PM="package FixMyStreet::Cobrand::$COBRAND_NAME;
+use base 'FixMyStreet::Cobrand::Default';
+sub path_to_web_templates {
+    my $self = shift;
+    return [ FixMyStreet->path_to( 'templates/web', 'fixmystreet' )->stringify,
+                FixMyStreet->path_to( 'templates/web', $self->moniker )->stringify ];
+}
+sub country { return 'NO'; }
+sub set_lang_and_domain {
+    my ( $self, $lang, $unicode, $dir ) = @_;
+    my $set_lang = mySociety::Locale::negotiate_language( 'en-gb,English,en_GB|nb,Norwegian,nb_NO', 'nb' );
+    mySociety::Locale::gettext_domain( 'FixMyStreet', $unicode, $dir );
+    mySociety::Locale::change();
+    return $set_lang;
+}
+sub site_title { my ($self) = @_; return '$COBRAND_NAME'; }
+1;"
+
+makedirs() {
+	mkdir ./templates/web/hild1
+	mkdir ./templates/web/hild1/faq
+	mkdir ./templates/email/hild1
+	mkdir ./web/cobrands/hild1
+}
+
+copyfiles() {
+	cp ./templates/web/fixmystreet/faq/faq-en-gb.html ./templates/web/hild1/faq/faq-nb.html
+	cp -r ./web/cobrands/default/* ./web/cobrands/hild1/
+}
+
+makepm() {
+	echo "$PM" > /perllib/FixMyStreet/Cobrand/$COBRAND_NAME.pm
+}
+
+makedirs
+copyfiles
+makepm
+
+echo "Please update config:
+ALLOWED_COBRANDS:
+  - $COBRAND_NAME
+  - fiksgatami
+  - fixmystreet"
