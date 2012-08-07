@@ -9,12 +9,13 @@ BASE="/root/FixMyStreet"
 if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
 	echo "\ndeb http://ftp.no.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list
+        echo "\ndeb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
 fi
 
 if [ "$(grep '^Pin: release a=testing' /etc/apt/sources.list | wc -l)" -ne "1" ]
 then
-    echo "Package: *\nPin: release a=stable\nPin-Priority: 950\n" >> /etc/apt/preferences
-    echo "Package: *\nPin: release a=testing\nPin-Priority: 900\n" >> /etc/apt/preferences
+    echo "Package: *\nPin: release a=squeeze-backports\nPin-Priority: 200\n" >> /etc/apt/preferences
+    echo "Package: *\nPin: release a=testing\nPin-Priority: 50\n" >> /etc/apt/preferences
 fi
 
 apt-get update
@@ -85,23 +86,23 @@ echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | psql -d fms -U fms
 
 echo "Installing required packages"
 
-# xargs -a conf/packages.debian-squeeze apt-get -y install
+xargs -a conf/packages.debian-squeeze+testing apt-get -y install
 # This package is no-working in stable and installed by cartoon anyway
-grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
+#grep -v libstatistics-distributions-perl conf/packages.debian-squeeze | xargs apt-get install -y
 
 #echo "Installing compass using gem"
 #gem install compass
 
 # installing compass from testing will remove libhaml-ruby libhaml-ruby1.8
 # install ruby-haml to compensate
-apt-get -y install ruby-compass ruby-haml
+#apt-get -y install ruby-compass ruby-haml
 
 # perl Image:Magick
 # apt-get install perlmagick
 # Already installed?
 
 # Why is not make installed? (cartoon requires make)
-apt-get -y install make
+#apt-get -y install make
 
 ./bin/install_perl_modules
 
