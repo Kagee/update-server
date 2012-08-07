@@ -102,7 +102,7 @@ xargs -a conf/packages.debian-squeeze+testing apt-get -y install
 # Already installed?
 
 # Why is not make installed? (cartoon requires make)
-#apt-get -y install make
+apt-get -y install make
 
 ./bin/install_perl_modules
 
