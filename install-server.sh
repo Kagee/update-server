@@ -94,7 +94,7 @@ install_packages() {
 		xargs -a conf/packages.debian-squeeze apt-get -y install
 		# installing compass from pinned testing 
 		# will remove libhaml-ruby libhaml-ruby1.8
-		#apt-get -y install ruby-compass ruby-haml
+		apt-get -y install ruby-compass ruby-haml
 	else
 		xargs -a conf/packages.debian-squeeze+testing apt-get -y install
 	fi
