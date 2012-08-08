@@ -1,6 +1,9 @@
 #! /bin/sh
 set -e
 DBPWD=$(head -c 32 /dev/urandom | base64)
+FMS_DB_PASS="$DBPWD"
+FMS_DB_USER="www-data"
+FMS_DB_NAME="fms"
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 BASE="/root/FixMyStreet"
 PLUSS_TESTING=0 # 0 = don't use +testing
@@ -50,7 +53,7 @@ generate_locales() {
 	fi
 }
 
-install_and_setup_psql() {
+install_and_setup_psql2() {
 	apt-get -y install postgresql-8.4
 
 	#TODO: Remove when script complete
@@ -85,8 +88,12 @@ install_and_setup_psql() {
 	echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | psql -d fms -U fms
 }
 
+install_and_setup_psql() {
+	
+}
+
 install_missing_packages() {
-	if [ PLUSS_TESTING -eq 0 ]; then
+	if [ $PLUSS_TESTING -eq 0 ]; then
 	        # missing module for admin/summary
 	        # only required for install w/o testing-repo
 	        #./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
@@ -97,7 +104,7 @@ install_missing_packages() {
 
 install_packages() {
 	echo "Installing required packages"
-	if [ PLUSS_TESTING -eq 0 ]; then
+	if [ $PLUSS_TESTING -eq 0 ]; then
 		xargs -a conf/packages.debian-squeeze apt-get -y install
 		# installing compass from pinned testing 
 		# will remove libhaml-ruby libhaml-ruby1.8
@@ -122,7 +129,9 @@ make_config() {
 	 -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://mapit.mysociety.org/'*"\
 	 -e "s*^  - cobrand_one*  - fixmystreet: 'localhost'*"\
 	 -e "s*^  - cobrand_two: 'hostname_substring2'*  - fixmystreet*"\
-	 -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$DBPWD'*"\
+	 -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$FMS_DB_PASS'*"\
+	 -e "s*^FMS_DB_NAME: ''*FMS_DB_NAME: '$FMS_DB_NAME'*"\
+	 -e "s*^FMS_DB_USER: ''*FMS_DB_USER: '$FMS_DB_USER'*"\
 	> ./conf/general.yml
 }
 
