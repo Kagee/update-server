@@ -13,7 +13,7 @@ RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 
 BASE="/root/FixMyStreet"
 # Wether or not to use the squeeze+testing-pacakgelist. 0: don't use. 1: use
-PLUSS_TESTING=0
+PLUSS_TESTING=1 # really no need to change
 
 add_apt_repo() {
 	if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]; then
