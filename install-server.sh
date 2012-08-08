@@ -89,17 +89,6 @@ install_and_setup_psql() {
 	echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | su $FMS_DB_USER -c "psql -d $FMS_DB_NAME"
 }
 
-install_missing_packages() {
-	if [ $PLUSS_TESTING -eq 0 ]; then
-	        # missing module for admin/summary
-	        # only required for install w/o testing-repo
-	        #./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
-		echo
-	fi
-        # missing module for app-dev-server "--restart"
-	# ./bin/cron-wrapper ./local/bin/carton install Catalyst::Restarter
-}
-
 install_packages() {
 	echo "Installing required packages"
 	if [ $PLUSS_TESTING -eq 0 ]; then
@@ -113,7 +102,6 @@ install_packages() {
 	# Carton requires make, but it is not in pacakge lists
 	apt-get -y install make
 	./bin/install_perl_modules
-	install_missing_packages
 }
 
 make_config() {
