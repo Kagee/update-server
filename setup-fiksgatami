@@ -8,11 +8,12 @@ COBRAND_NAME="hild1" # no spaces
 
 PM="package FixMyStreet::Cobrand::$COBRAND_NAME;
 use base 'FixMyStreet::Cobrand::Default';
-sub path_to_web_templates {
-    my $self = shift;
-    return [ FixMyStreet->path_to( 'templates/web', 'fixmystreet' )->stringify,
-                FixMyStreet->path_to( 'templates/web', $self->moniker )->stringify ];
-}
+# this should be in default now
+#sub path_to_web_templates {
+#    my $self = shift;
+#    return [ FixMyStreet->path_to( 'templates/web', 'fixmystreet' )->stringify,
+#                FixMyStreet->path_to( 'templates/web', $self->moniker )->stringify ];
+#}
 sub country { return 'NO'; }
 sub set_lang_and_domain {
     my ( $self, $lang, $unicode, $dir ) = @_;
