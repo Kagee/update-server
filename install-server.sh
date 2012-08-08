@@ -95,12 +95,10 @@ install_packages() {
 		xargs -a conf/packages.debian-squeeze apt-get -y install
 		# installing compass from pinned testing 
 		# will remove libhaml-ruby libhaml-ruby1.8
-		apt-get -y install ruby-compass ruby-haml
+		#apt-get -y install ruby-compass ruby-haml
 	else
 		xargs -a conf/packages.debian-squeeze+testing apt-get -y install
 	fi
-	# Carton requires make, but it is not in pacakge lists
-	apt-get -y install make
 	./bin/install_perl_modules
 }
 
