@@ -1,12 +1,19 @@
 #! /bin/sh
-set -e
-DBPWD=$(head -c 32 /dev/urandom | base64)
-FMS_DB_PASS="$DBPWD"
+set -e -x
+
+# Database settings
+FMS_DB_PASS=$(head -c 32 /dev/urandom | base64)
+# this should be the username of a exsisting 
+# account that can se su-ed to:
 FMS_DB_USER="www-data"
 FMS_DB_NAME="fms"
+
+# Random salt as secret for admin
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
+
 BASE="/root/FixMyStreet"
-PLUSS_TESTING=0 # 0 = don't use +testing
+# Wether or not to use the squeeze+testing-pacakgelist. 0: don't use. 1: use
+PLUSS_TESTING=0
 
 add_apt_repo() {
 	if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]; then
@@ -53,43 +60,33 @@ generate_locales() {
 	fi
 }
 
-install_and_setup_psql2() {
+pgsql_createuser() {
+    dbuser="$1"
+    dbpassword="$2"
+    su postgres -c "createuser -SDRl $dbuser"
+    su postgres -c "psql -c \"alter user \\\"$dbuser\\\" with password '$dbpassword';\""
+}
+pgsql_remove_db() {
+    dbname="$1"
+    su postgres -c "dropdb $dbname"
+}
+pgsql_remove_user() {
+    dbuser="$1"
+    su postgres -c "dropuser $dbuser"
+}
+install_and_setup_psql() {
 	apt-get -y install postgresql-8.4
-
-	#TODO: Remove when script complete
-	echo "DROP DATABASE fms; DROP USER FMS;" | su postgres -c "psql --echo-all"
-
-	echo "CREATE USER fms WITH PASSWORD '$DBPWD'; CREATE DATABASE fms WITH OWNER fms;" | su postgres -c "psql --echo-all"
-
-	if [! echo "\q" | psql -d fms -U fms]; 	then
-		# psql: FATAL:  Ident authentication failed for user "fms"
-		echo "Adding 'local fms fms trust' to /etc/postgresql/8.4/main/pg_hba.conf"
-		cp /etc/postgresql/8.4/main/pg_hba.conf /etc/postgresql/8.4/main/pg_hba.conf.fms
-		echo "local fms fms trust\n" > /etc/postgresql/8.4/main/pg_hba.conf
-		cat /etc/postgresql/8.4/main/pg_hba.conf.fms >> /etc/postgresql/8.4/main/pg_hba.conf
-		rm /etc/postgresql/8.4/main/pg_hba.conf.fms
-		/etc/init.d/postgresql restart
-	else
-		echo "Can connect to psql using fms"
+	pgsql_remove_db "$FMS_DB_NAME" || true
+	pgsql_remove_user "$FMS_DB_USER" || true
+	pgsql_createuser "$FMS_DB_USER" "$FMS_DB_PASS"
+	su postgres -c "createdb -E UTF8 --owner $FMS_DB_USER $FMS_DB_NAME; createlang plpgsql $FMS_DB_NAME"
+	if ! echo "\q" | su $FMS_DB_USER -c "psql $FMS_DB_NAME"; then
+		echo "Failed to connect to postgresql/$FMS_DB_NAME as $FMS_DB_USER"
 		exit 1;
 	fi
-
-	echo "CREATE LANGUAGE plpgsql;" | psql -d fms -U fms
-
-	echo "Importing schemas"
-	if [ ! -f db/schema.sql ] || [ ! -f db/alert_types.sql ]; then
-		echo "I should be run from the fixmystreet folder"
-		exit 1
-	fi
-	psql -d fms -U fms < db/schema.sql
-	psql -d fms -U fms < db/alert_types.sql
-
-	echo "Inserting secret"
-	echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | psql -d fms -U fms
-}
-
-install_and_setup_psql() {
-	
+	cat $BASE/fixmystreet/db/schema.sql               | su $FMS_DB_USER -c "psql -d $FMS_DB_NAME"
+        cat $BASE/fixmystreet/db/alert_types.sql          | su $FMS_DB_USER -c "psql -d $FMS_DB_NAME"
+	echo "INSERT INTO secret VALUES ('$RANDOMSALT');" | su $FMS_DB_USER -c "psql -d $FMS_DB_NAME"
 }
 
 install_missing_packages() {
@@ -97,9 +94,10 @@ install_missing_packages() {
 	        # missing module for admin/summary
 	        # only required for install w/o testing-repo
 	        #./bin/cron-wrapper ./local/bin/carton install Template::Plugin::DateTime::Format
+		echo
 	fi
         # missing module for app-dev-server "--restart"
-        ./bin/cron-wrapper ./local/bin/carton install Catalyst::Restarter
+	# ./bin/cron-wrapper ./local/bin/carton install Catalyst::Restarter
 }
 
 install_packages() {
@@ -129,9 +127,9 @@ make_config() {
 	 -e "s*^MAPIT_URL: ''*MAPIT_URL: 'http://mapit.mysociety.org/'*"\
 	 -e "s*^  - cobrand_one*  - fixmystreet: 'localhost'*"\
 	 -e "s*^  - cobrand_two: 'hostname_substring2'*  - fixmystreet*"\
-	 -e "s*^FMS_DB_PASS: ''*FMS_DB_PASS: '$FMS_DB_PASS'*"\
-	 -e "s*^FMS_DB_NAME: ''*FMS_DB_NAME: '$FMS_DB_NAME'*"\
-	 -e "s*^FMS_DB_USER: ''*FMS_DB_USER: '$FMS_DB_USER'*"\
+	 -e "s#^FMS_DB_PASS.*\$#FMS_DB_PASS: '$FMS_DB_PASS'#"\
+	 -e "s#^FMS_DB_NAME.*\$#FMS_DB_NAME: '$FMS_DB_NAME'#"\
+	 -e "s#^FMS_DB_USER.*\$#FMS_DB_USER: '$FMS_DB_USER'#"\
 	> ./conf/general.yml
 }
 
