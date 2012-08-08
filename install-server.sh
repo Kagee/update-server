@@ -74,8 +74,7 @@ pgsql_remove_user() {
     dbuser="$1"
     su postgres -c "dropuser $dbuser"
 }
-install_and_setup_psql() {
-	apt-get -y install postgresql-8.4
+setup_psql() {
 	pgsql_remove_db "$FMS_DB_NAME" || true
 	pgsql_remove_user "$FMS_DB_USER" || true
 	pgsql_createuser "$FMS_DB_USER" "$FMS_DB_PASS"
@@ -153,8 +152,8 @@ footer() {
 add_apt_repo
 generate_locales
 setup_folders_git_checkout
-install_and_setup_psql
 install_packages
+setup_psql
 make_config
 make_css
 generate_po
