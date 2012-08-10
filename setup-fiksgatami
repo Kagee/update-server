@@ -6,7 +6,7 @@ cd /root/FixMyStreet/fixmystreet
 
 COBRAND_NAME="hild1" # no spaces
 
-PM="package FixMyStreet::Cobrand::\$COBRAND_NAME;
+PM="package FixMyStreet::Cobrand::$COBRAND_NAME;
 use base 'FixMyStreet::Cobrand::Default';
 sub country { return 'NO'; }
 sub set_lang_and_domain {
