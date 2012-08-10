@@ -20,10 +20,10 @@ sub site_title { my ($self) = @_; return '$COBRAND_NAME'; }
 1;"
 
 makedirs() {
-	mkdir ./templates/web/$COBRAND_NAME
-	mkdir ./templates/web/$COBRAND_NAME/faq
-	mkdir ./templates/email/$COBRAND_NAME
-	mkdir ./web/cobrands/$COBRAND_NAME
+	mkdir -p ./templates/web/$COBRAND_NAME
+	mkdir -p ./templates/web/$COBRAND_NAME/faq
+	mkdir -p ./templates/email/$COBRAND_NAME
+	mkdir -p ./web/cobrands/$COBRAND_NAME
 }
 
 copyfiles() {
@@ -32,15 +32,21 @@ copyfiles() {
 }
 
 makepm() {
-	echo "$PM" > /perllib/FixMyStreet/Cobrand/$COBRAND_NAME.pm
+	echo "$PM" > ./perllib/FixMyStreet/Cobrand/$COBRAND_NAME.pm
+}
+
+change_config() {
+	# Add several cobrands ( for testing )
+	sed -e "/^.*-.*$/d" \
+	-e "s#^ALLOWED_COBRANDS:.*\$#ALLOWED_COBRANDS:\\n - fixmystreet: 'fms'\\n - fiksgatami: 'fgm'\\n - $COBRAND_NAME#" \
+	./conf/general.yml > ./conf/general.yml.new
+	mv ./conf/general.yml.new ./conf/general.yml
+	# Add only one cobrand ( prod )
 }
 
 makedirs
 copyfiles
 makepm
+change_config
 
-echo "Please update config:
-ALLOWED_COBRANDS:
-  - $COBRAND_NAME
-  - fiksgatami
-  - fixmystreet"
+echo end
