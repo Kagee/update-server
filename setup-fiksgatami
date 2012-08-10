@@ -37,6 +37,7 @@ makepm() {
 
 change_config() {
 	# Add several cobrands ( for testing )
+	# This first expressing will be a charlie foxtrot if any more YAML-arrays are added to the configfile
 	sed -e "/^.*-.*$/d" \
 	-e "s#^ALLOWED_COBRANDS:.*\$#ALLOWED_COBRANDS:\\n - fixmystreet: 'fms'\\n - fiksgatami: 'fgm'\\n - $COBRAND_NAME#" \
 	./conf/general.yml > ./conf/general.yml.new
