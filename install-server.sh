@@ -12,8 +12,6 @@ FMS_DB_NAME="fms"
 RANDOMSALT=$(head -c 32 /dev/urandom | base64)
 
 BASE="/root/FixMyStreet"
-# Wether or not to use the squeeze+testing-pacakgelist. 0: don't use. 1: use
-PLUSS_TESTING=1 # really no need to change
 
 add_apt_repo() {
 	if [ "$(grep 'http://ftp.no.debian.org/debian testing' /etc/apt/sources.list | wc -l)" -ne "1" ]; then
@@ -90,14 +88,7 @@ setup_psql() {
 
 install_packages() {
 	echo "Installing required packages"
-	if [ $PLUSS_TESTING -eq 0 ]; then
-		xargs -a conf/packages.debian-squeeze apt-get -y install
-		# installing compass from pinned testing 
-		# will remove libhaml-ruby libhaml-ruby1.8
-		apt-get -y install ruby-compass ruby-haml
-	else
-		xargs -a conf/packages.debian-squeeze+testing apt-get -y install
-	fi
+	xargs -a conf/packages.debian-squeeze+testing apt-get -y install
 	./bin/install_perl_modules
 }
 
