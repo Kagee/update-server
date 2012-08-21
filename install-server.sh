@@ -29,7 +29,7 @@ add_apt_repo() {
 setup_folders_git_checkout() {
 	apt-get install -y git
 	if [ ! -d $BASE ]; then
-	    mkdir $BASE
+	    mkdir --parents $BASE
 	fi
 	cd $BASE
 	if [ ! -d "fixmystreet" ]; then
